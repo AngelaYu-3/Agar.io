@@ -16,7 +16,7 @@ public class Food {
     public Food() {
     	x = (int)(Math.random() * 2500 - 500);
 	    y = (int)(Math.random() * 2500 - 500);
-        rad = 10;
+        rad = 5;
         cx = x + rad;
         cy = y + rad;
         mass = (int) (Math.PI * rad * rad);
