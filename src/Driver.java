@@ -1,3 +1,5 @@
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -19,33 +21,54 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	ArrayList<Food> foodBank;
 	Timer t;
 	Cell player;
+	Font font2 = new Font("Courier New", 1, 15);
+	
+	/*TODO:
+	 * randomize movement of enemies more
+	 * get "YOU" text working
+	 * get food working (inheritance?--make more organized)
+	 * mouse movement
+	 */
 
 	public void paint(Graphics g) {
 		super.paintComponent(g);
 		
-		//checking for collisions and removing smaller enemy
-		//painting enemies
-		int index = -1;
-		for(Enemy e: enemies) {
-			e.paint(g); 
-			for(int i = 0; i < enemies.size(); i++) {
-    	        if(e.isColliding(enemies.get(i)) && e.getRad() > enemies.get(i).getRad()) {
-    	        		e.updateSize(enemies.get(i));
-    	        		index = i;	
-    	        		break;
-    	        }
-    	    }
-		}
-		if(index != -1) {
-			enemies.remove(index);
+		if(foodBank.size() != 300) {
+			for(int i = foodBank.size(); i < 300; i++) {
+				foodBank.add(new Food());
+			}
 		}
 		
-		for(Food f: foodBank) {
-			f.paint(g); 
+		//painting enemies and food
+		for(Enemy e: enemies) {
+			e.paint(g); 	
 		}
+		for(Food f: foodBank) {
+			f.paint(g);
+		}
+		
+		//checking for enemy collisions and removing smaller enemy
+		for(Enemy e: enemies) {
+			if(e.enemyCollision(enemies, e)) break;
+		}
+		
+		//checking for food collisions and removing food
+		for(Enemy e: enemies) {
+		    for(int i = 0; i < foodBank.size(); i++) {
+		    	if(foodBank.get(i).isColliding(e)) {
+				    e.updateSize(foodBank.get(i).getMass());	
+				    foodBank.remove(i);
+				    break;
+		    	}
+		    }
+		}
+		
         //painting player
         player.paint(g);
-         
+        
+        g.setFont(font2);
+    	g.setColor(Color.black);
+    	g.drawString("Enemies Alive: " + enemies.size(), 10 , 10);
     }
         
 
@@ -59,7 +82,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 			enemies.add(new Enemy());
 		}
 		
-		for(int i = 0; i < 200; i++) {
+		for(int i = 0; i < 300; i++) {
 			foodBank.add(new Food());
 		}
 		
@@ -86,7 +109,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+		//System.out.println("Mouse moved! X: " +  e.getX() + " Y: " + e.getY());
+		player.move(e.getX(), e.getY());
 	}
 
 

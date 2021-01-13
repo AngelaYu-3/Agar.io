@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 public class Food { 
     private int vx, vy;
@@ -16,12 +17,12 @@ public class Food {
     public Food() {
     	x = (int)(Math.random() * 2500 - 500);
 	    y = (int)(Math.random() * 2500 - 500);
-        rad = 5;
+        rad = 4;
         cx = x + rad;
         cy = y + rad;
         mass = (int) (Math.PI * rad * rad);
 	     
-	    color = new Color(0, 255, 0); 
+	    color = new Color(100, 255, 0); 
     }
     
     public void paint(Graphics g) {
@@ -36,11 +37,23 @@ public class Food {
         y += vy;
     }
     
-    public boolean isColliding(Food food) {
-		double minDist = rad + food.rad; 
-		double distance = Math.sqrt(Math.pow(cx - food.cx, 2) + Math.pow(cy - food.cy, 2));
+    public boolean enemyCollision(ArrayList<Food> foodBank, Enemy e) {
+	     for(int i = 0; i < foodBank.size(); i++) {
+			 if(foodBank.get(i).isColliding(e)) {
+			    e.updateSize(mass);
+			    foodBank.remove(i);
+			    return true;
+			 }
+	     } 
+	     return false;
+		 
+	 }
+    
+    public boolean isColliding(Enemy e) {
+		double minDist = rad + e.getRad(); 
+		double distance = Math.sqrt(Math.pow(cx - e.getCx(), 2) + Math.pow(cy - e.getCy(), 2));
 		
-		if(distance > minDist/2) {
+		if(distance > minDist) {
 			return false;
 		}return true;
 	 }
@@ -68,4 +81,12 @@ public class Food {
     public void setVy(int vy) {
     	this.vy = vy;
     }
+    
+    public int getMass() {
+    	return mass;
+    }
+
+	public void updateSize(Enemy e) {
+		// TODO Auto-generated method stub
+	}
 }
