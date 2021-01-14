@@ -25,29 +25,18 @@ public class Food {
 	    color = new Color(100, 255, 0); 
     }
     
-    public void paint(Graphics g) {
-    	update();
+    public void paint(Graphics g, Cell p) {
+    	update(p);
     	g.setColor(color);
     	g.fillOval(x, y, rad * 2, rad * 2);  
     }
     
     //anything that updates variable of this object
-    public void update() {
-        x += vx;
-        y += vy;
+    public void update(Cell p) {
+        x += (vx + p.getVx());
+        y += (vy + p.getVy());
+        
     }
-    
-    public boolean enemyCollision(ArrayList<Food> foodBank, Enemy e) {
-	     for(int i = 0; i < foodBank.size(); i++) {
-			 if(foodBank.get(i).isColliding(e)) {
-			    e.updateSize(mass);
-			    foodBank.remove(i);
-			    return true;
-			 }
-	     } 
-	     return false;
-		 
-	 }
     
     public boolean isColliding(Enemy e) {
 		double minDist = rad + e.getRad(); 

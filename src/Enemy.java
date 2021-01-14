@@ -12,13 +12,18 @@ public class Enemy {
 	 private int cx, cy;
 	 private int radToVelX, radToVelY;
 	 private Color color;
-	 Rectangle world = new Rectangle(-500, -500, 2000, 2000);
+	 private int wx, wy, width;
+	 Rectangle world;
 	 double randX = Math.random(), randY = Math.random();
 
 	 
 	 public Enemy() {
 		 rad = (int)(Math.random() * 40 + 20);
 		 mass = (int)(Math.PI * rad * rad);
+		 wx = -500;
+		 wy = -500;
+		 width = 2000;
+		 world = new Rectangle(wx, wy, width, width);
 	    
 	     x = (int)(Math.random() * 2500 - 500);
 	     y = (int)(Math.random() * 2500 - 500);
@@ -79,24 +84,24 @@ public class Enemy {
 	     
 	 }
 	 
-	 public void paint(Graphics g) {
-		 update();
+	 public void paint(Graphics g, Cell p) {
+		 update(p);
 		 g.setColor(color);
 		 g.fillOval(x, y, rad * 2, rad * 2);
 		 
-		 g.setColor(color.BLACK);
-		 g.drawRect(-500, -500, 2000, 2000);
+		 wx += (vx + p.getVx());
+		 wy += (vy + p.getVy());
 		 
 		 //have enemy object bounce off world rectangle borders
-		 if(x <= world.getMinX() || x >= world.getMaxX()) {
+		 if(x <= wx || x >= wx + width) {
 			 vx = -vx;
 		 }
-		 if(y <= world.getMinY() || y >= world.getMaxY()) {
+		 if(y <= wy || y >= wy + width) {
 			 vy = -vy;
 		 }
 	 }
 	 
-	 public void update() {
+	 public void update(Cell p) {
     
 		 if(Math.abs(vx) > 1) {
 			 
@@ -116,10 +121,10 @@ public class Enemy {
 			 
 		 }
 		 
-		 x += vx;
-		 y += vy;
-		 cx += vx;
-	     cy += vy;
+		 x += (vx + p.getVx());
+	     y += (vy + p.getVy());
+		 cx += (vx + p.getVx());
+	     cy += (vy + p.getVy());
 	 }
 	 
 	 public int getRad() {

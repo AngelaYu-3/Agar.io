@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 public class Cell { 
     private int vx, vy;
@@ -9,6 +10,8 @@ public class Cell {
     private int x, y;
     private int cx, cy;
     private int radToVelocity = 150;
+    private int wx, wy, width;
+	Rectangle world;
     private Color color;
     private boolean isAlive;
     
@@ -16,50 +19,61 @@ public class Cell {
     
     //constructor
     public Cell(int x, int y, int rad) {
-        this.x = y;
+        this.x = x;
         this.y = y;
         this.rad = rad;
         this.mass = (int) (Math.PI * rad * rad);
-	    cx = x + rad/2;
-	    cy = y + rad/2;
+        wx = -500;
+        wy = -500;
+        width = 2000;
+        world = new Rectangle(wx, wy, width, width);
+	    cx = x + rad - 13;
+	    cy = y + rad;
 	    
 	    color = new Color(51, 204, 204); 
     }
     
     public void paint(Graphics g) {
-    	update();
     	g.setColor(color);
     	g.fillOval(x, y, rad * 2, rad * 2);  
     	
     	g.setFont(font2);
     	g.setColor(Color.black);
-    	g.drawString("YOU",x + 15, y + 30);
-    	//System.out.println("cx: " + cx + "cy: " + cy);
-    }
-    
-    //anything that updates variable of this object
-    public void update() {
-    	//vx = (int)(radToVelocity/rad);
-    	//vy = (int)(radToVelocity/rad);
-        x += vx;
-        y += vy;
+    	g.drawString("YOU",cx, cy);
+    	
+    	wx += vx;
+		wy += vy;
     }
     
     public void updateSize(int mass) {
-    	this.mass += (int)((mass));
-    	rad = (int)Math.sqrt(this.mass/Math.PI);
+    	if(mass != 2000) {
+			 this.mass += (int)((mass));
+		     rad = (int)Math.sqrt(this.mass/Math.PI);
+		     cx = x + rad;
+		     cy = y + rad;	 
+		 }
     }
     
     public void move(int mx, int my) {
-    	double xDist = (mx - cx);
-    	double yDist = (cy-my);
-        double angle = Math.atan(yDist/xDist);
-        System.out.println("mx " + mx + " my " + my + " cx " + cx + " cy " + cy);
-        System.out.println("yDist " + (cy - my));
-        //System.out.println("xDist: " + xDist + " yDist: " + yDist + " angle: " + angle);
-        double v = Math.sqrt((2* Math.pow(radToVelocity/rad, 2)));
-        int vx = (int)(v * Math.acos(angle));
-        int vy = (int)(v * Math.asin(angle));
+    	int xSign, ySign;
+    	double xDist = mx - cx;
+    	double yDist = my-cy;
+    	
+    	xSign = (xDist < 0) ? 1: -1;
+    	ySign = (yDist < 0) ? 1: -1;
+    	
+    	if(Math.sqrt((Math.pow(xDist, 2) + Math.pow(yDist, 2))) > 500 || ((mx < 460 && mx > 400) && (my < 360 && my > 300))) {
+    		vx = 0;
+    		vy = 0;
+    	}else {
+    		double angle = Math.abs(Math.atan(yDist/xDist));
+            double v = Math.sqrt((2* Math.pow(radToVelocity/rad, 2)));
+            vx = (int)(v * Math.cos(angle) * xSign);
+            vy = (int)(v * Math.sin(angle) * ySign);
+    	}
+    	
+    	
+        
     }
     
     //mass to radius helper method
@@ -92,5 +106,17 @@ public class Cell {
     
     public int getCy() {
     	return cy;
+    }
+    
+    public int getWx() {
+    	return wx;
+    }
+    
+    public int getWy() {
+    	return wy;
+    }
+    
+    public int getWidth() {
+    	return width;
     }
 }

@@ -22,6 +22,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	Timer t;
 	Cell player;
 	Font font2 = new Font("Courier New", 1, 15);
+	Font font1 = new Font("Courier New", 1, 100);
 	
 	/*TODO:
 	 * randomize movement of enemies more
@@ -33,19 +34,18 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	public void paint(Graphics g) {
 		super.paintComponent(g);
 		
-		if(foodBank.size() != 300) {
-			for(int i = foodBank.size(); i < 300; i++) {
-				foodBank.add(new Food());
-			}
+		g.setColor(Color.BLACK);
+		g.drawRect(player.getWx(), player.getWy(), player.getWidth(), player.getWidth());
+		
+		for(Food f: foodBank) {
+			f.paint(g, player);
 		}
 		
 		//painting enemies and food
 		for(Enemy e: enemies) {
-			e.paint(g); 	
+			e.paint(g, player); 	
 		}
-		for(Food f: foodBank) {
-			f.paint(g);
-		}
+		
 		
 		//checking for enemy collisions and removing smaller enemy
 		for(Enemy e: enemies) {
@@ -63,12 +63,24 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		    }
 		}
 		
+		if(foodBank.size() != 500) {
+			for(int i = foodBank.size(); i < 500; i++) {
+				foodBank.add(new Food());
+			}
+		}
+		
         //painting player
         player.paint(g);
         
         g.setFont(font2);
     	g.setColor(Color.black);
     	g.drawString("Enemies Alive: " + enemies.size(), 10 , 10);
+    	
+    	if(enemies.size() == 0) {
+    		g.setFont(font1);
+    		g.setColor(Color.black);
+        	g.drawString("You Won!", 150, 200);
+    	}
     }
         
 
@@ -82,7 +94,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 			enemies.add(new Enemy());
 		}
 		
-		for(int i = 0; i < 300; i++) {
+		for(int i = 0; i < 500; i++) {
 			foodBank.add(new Food());
 		}
 		
