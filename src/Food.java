@@ -9,7 +9,6 @@ public class Food {
     private int rad;
     private int x, y;
     private int cx, cy;
-    private int radToVelocity = 150;
     private Color color;
     private boolean isAlive;
     
@@ -35,10 +34,12 @@ public class Food {
     public void update(Cell p) {
         x += (vx + p.getVx());
         y += (vy + p.getVy());
+        cx += (vx + p.getVx());
+        cy += (vy + p.getVy());
         
     }
     
-    public boolean isColliding(Enemy e) {
+    public boolean isCollidingE(Enemy e) {
 		double minDist = rad + e.getRad(); 
 		double distance = Math.sqrt(Math.pow(cx - e.getCx(), 2) + Math.pow(cy - e.getCy(), 2));
 		
@@ -46,6 +47,15 @@ public class Food {
 			return false;
 		}return true;
 	 }
+    
+    public boolean isCollidingP(Cell p) {
+    	double minDist = rad + p.getRad();
+        double distance = Math.sqrt(Math.pow(cx - p.getCx(), 2) + Math.pow(cy - p.getCy(), 2));
+		
+		if(distance > minDist) {
+			return false;
+		}return true;
+    }
     
     //mass to radius helper method
     public int getX() {

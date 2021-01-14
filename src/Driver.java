@@ -55,12 +55,19 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		//checking for food collisions and removing food
 		for(Enemy e: enemies) {
 		    for(int i = 0; i < foodBank.size(); i++) {
-		    	if(foodBank.get(i).isColliding(e)) {
+		    	if(foodBank.get(i).isCollidingE(e)) {
 				    e.updateSize(foodBank.get(i).getMass());	
 				    foodBank.remove(i);
 				    break;
 		    	}
 		    }
+		}
+		
+		for(int i = 0; i < foodBank.size(); i++) {
+			if(foodBank.get(i).isCollidingP(player)) {
+			    player.updateSize(foodBank.get(i).getMass());
+			    foodBank.remove(i);
+			}
 		}
 		
 		if(foodBank.size() != 500) {

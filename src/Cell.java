@@ -9,7 +9,7 @@ public class Cell {
     private int rad;
     private int x, y;
     private int cx, cy;
-    private int radToVelocity = 150;
+    private int radToVelocity = 250;
     private int wx, wy, width;
 	Rectangle world;
     private Color color;
@@ -27,7 +27,7 @@ public class Cell {
         wy = -500;
         width = 2000;
         world = new Rectangle(wx, wy, width, width);
-	    cx = x + rad - 13;
+	    cx = x + rad;
 	    cy = y + rad;
 	    
 	    color = new Color(51, 204, 204); 
@@ -39,7 +39,7 @@ public class Cell {
     	
     	g.setFont(font2);
     	g.setColor(Color.black);
-    	g.drawString("YOU",cx, cy);
+    	g.drawString("YOU",cx-15, cy);
     	
     	wx += vx;
 		wy += vy;
@@ -118,5 +118,9 @@ public class Cell {
     
     public int getWidth() {
     	return width;
+    }
+    
+    public int getRad() {
+    	return rad;
     }
 }
