@@ -13,9 +13,9 @@ public class Food {
     private boolean isAlive;
     
     //constructor
-    public Food() {
-    	x = (int)(Math.random() * 2500 - 500);
-	    y = (int)(Math.random() * 2500 - 500);
+    public Food(Cell p) {
+    	x = (int)(Math.random() * 2000 + p.getWx()-5);
+	    y = (int)(Math.random() * 2000 + p.getWy()-5);
         rad = 4;
         cx = x + rad;
         cy = y + rad;

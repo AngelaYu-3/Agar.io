@@ -73,7 +73,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		
 		if(foodBank.size() != 500) {
 			for(int i = foodBank.size(); i < 500; i++) {
-				foodBank.add(new Food());
+				foodBank.add(new Food(player));
 			}
 		}
 		
@@ -103,7 +103,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		}
 		
 		for(int i = 0; i < 500; i++) {
-			foodBank.add(new Food());
+			foodBank.add(new Food(player));
 		}
 		
 		
