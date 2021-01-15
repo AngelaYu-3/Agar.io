@@ -12,30 +12,24 @@ public class Enemy {
 	 private int cx, cy;
 	 private int radToVelX, radToVelY;
 	 private Color color;
-	 private int wx, wy, width;
-	 Rectangle world;
 	 double randX = Math.random(), randY = Math.random();
 
 	 
 	 public Enemy() {
-		 rad = (int)(Math.random() * 40 + 20);
+		 rad = (int)(Math.random() * 40 + 10);
 		 mass = (int)(Math.PI * rad * rad);
-		 wx = -500;
-		 wy = -500;
-		 width = 2000;
-		 world = new Rectangle(wx, wy, width, width);
 	    
 	     x = (int)(Math.random() * 2500 - 500);
 	     y = (int)(Math.random() * 2500 - 500);
 	     
-	     radToVelX = (int)(Math.random() * 10 + 150);
+	     radToVelX = (int)(Math.random() * 5 + 150);
 	     if(randX < 0.5) {
 			 vx = (int)(radToVelX/rad); 
 		 }else {
 			 vx = (int)(-radToVelX/rad); 
 		 }
 	     
-	     radToVelY = (int)(Math.random() * 10 + 150);
+	     radToVelY = (int)(Math.random() * 5 + 150);
 	     if(randY < 0.5) {
 			 vy = (int)(radToVelY/rad); 
 		 }else {
@@ -75,9 +69,9 @@ public class Enemy {
 	 }
 	 
 	 public void updateSize(int mass) {
-		 if(mass != 2000) {
+		 if(mass != 500) {
 			 this.mass += (int)((mass));
-		     rad = (int)Math.sqrt(this.mass/Math.PI);
+		     rad = (int)Math.sqrt(this.mass/Math.PI); 
 		     cx = x + rad;
 		     cy = y + rad;	 
 		 }
@@ -88,37 +82,29 @@ public class Enemy {
 		 update(p);
 		 g.setColor(color);
 		 g.fillOval(x, y, rad * 2, rad * 2);
-		 
-		 wx += (vx + p.getVx());
-		 wy += (vy + p.getVy());
-		 
+			
 		 //have enemy object bounce off world rectangle borders
-		 if(x <= wx || x >= wx + width) {
+		 if(x == p.getWx() || x == (p.getWx() + p.getWidth())) {
 			 vx = -vx;
 		 }
-		 if(y <= wy || y >= wy + width) {
+		 if(y == p.getWy() || y == (p.getWy() + p.getWidth())) {
 			 vy = -vy;
-		 }
+		 } 
 	 }
 	 
 	 public void update(Cell p) {
-    
-		 if(Math.abs(vx) > 1) {
-			 
-			 if(randX < 0.5) {
-				 vx = (int)(radToVelX/rad); 
-			 }else {
-				 vx = (int)(-radToVelX/rad); 
-			 }
+		 radToVelX = (int)(Math.random() * 5 + 150);
+	     if(randX < 0.5) {
+			 vx = (int)(radToVelX/rad); 
+		 }else {
+			 vx = (int)(-radToVelX/rad); 
 		 }
-		 
-		 if(Math.abs(vy) > 1) {
-			 if(randY < 0.5) {
-				 vy = (int)(radToVelY/rad); 
-			 }else {
-				 vy = (int)(-radToVelY/rad); 
-			 }
-			 
+	     
+	     radToVelY = (int)(Math.random() * 5 + 150);
+	     if(randY < 0.5) {
+			 vy = (int)(radToVelY/rad); 
+		 }else {
+			 vy = (int)(-radToVelY/rad); 
 		 }
 		 
 		 x += (vx + p.getVx());

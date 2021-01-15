@@ -25,10 +25,11 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	Font font1 = new Font("Courier New", 1, 100);
 	
 	/*TODO:
-	 * randomize movement of enemies more
-	 * get "YOU" text working
-	 * get food working (inheritance?--make more organized)
-	 * mouse movement
+	 * fix border collision--based on movement of border (will need to work on collision in terms of player!!)
+	 * get food to only spawn in border
+	 * fix max size of enemies
+	 * 
+	 * split??
 	 */
 
 	public void paint(Graphics g) {
@@ -43,7 +44,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		
 		//painting enemies and food
 		for(Enemy e: enemies) {
-			e.paint(g, player); 	
+			e.paint(g, player); 
 		}
 		
 		

@@ -62,18 +62,21 @@ public class Cell {
     	xSign = (xDist < 0) ? 1: -1;
     	ySign = (yDist < 0) ? 1: -1;
     	
-    	if(Math.sqrt((Math.pow(xDist, 2) + Math.pow(yDist, 2))) > 500 || ((mx < 460 && mx > 400) && (my < 360 && my > 300))) {
+    	double angle = Math.abs(Math.atan(yDist/xDist));
+        double v = Math.sqrt((2* Math.pow(radToVelocity/rad, 2)));
+        vx = (int)(v * Math.cos(angle) * xSign);
+        vy = (int)(v * Math.sin(angle) * ySign);
+    	
+    	if(Math.sqrt((Math.pow(xDist, 2) + Math.pow(yDist, 2))) > 500 || ((mx < 460 && mx > 400) && (my < 360 && my > 300))
+    			|| x <= wx || x >= wx + width || y <= wy || y >= wy + width) {
     		vx = 0;
     		vy = 0;
-    	}else {
-    		double angle = Math.abs(Math.atan(yDist/xDist));
-            double v = Math.sqrt((2* Math.pow(radToVelocity/rad, 2)));
-            vx = (int)(v * Math.cos(angle) * xSign);
-            vy = (int)(v * Math.sin(angle) * ySign);
     	}
     	
-    	
-        
+    	if(x <= wx && xSign < 0) {
+    		vx = (int)(v * Math.cos(angle) * xSign);
+    	}
+
     }
     
     //mass to radius helper method
