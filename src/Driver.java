@@ -21,8 +21,12 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	ArrayList<Food> foodBank;
 	Timer t;
 	Cell player;
-	Font font2 = new Font("Courier New", 1, 15);
 	Font font1 = new Font("Courier New", 1, 100);
+	Font font2 = new Font("Courier New", 1, 15);
+	Font font3 = new Font("Courier New", 1, 50);
+	long startTime, endTime;
+	int time = 0;
+	boolean isWinner;
 	
 	/*TODO:
 	 * fix border collision--based on movement of border (will need to work on collision in terms of player!!)
@@ -38,26 +42,17 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		g.setColor(Color.BLACK);
 		g.drawRect(player.getWx(), player.getWy(), player.getWidth(), player.getWidth());
 		
-		for(Food f: foodBank) {
-			f.paint(g, player);
-		}
-		
-		//painting enemies and food
-		for(Enemy e: enemies) {
-			e.paint(g, player); 
-		}
-		
 		
 		//checking for enemy collisions and removing smaller enemy
 		for(Enemy e: enemies) {
-			if(e.enemyCollision(enemies, e)) break;
+			if(e.enemyCollision(enemies, e, player)) break;
 		}
 		
 		//checking for food collisions and removing food
 		for(Enemy e: enemies) {
 		    for(int i = 0; i < foodBank.size(); i++) {
-		    	if(foodBank.get(i).isCollidingE(e)) {
-				    e.updateSize(foodBank.get(i).getMass());	
+		    	if(foodBank.get(i).isCollidingE(e) && !isWinner) {
+				    e.updateSize(foodBank.get(i).getMass(), player);	
 				    foodBank.remove(i);
 				    break;
 		    	}
@@ -65,8 +60,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		}
 		
 		for(int i = 0; i < foodBank.size(); i++) {
-			if(foodBank.get(i).isCollidingP(player)) {
-			    player.updateSize(foodBank.get(i).getMass());
+			if(foodBank.get(i).isCollidingP(player) && !isWinner) {
+			    player.updateSize(foodBank.get(i).getMass() + 10);
 			    foodBank.remove(i);
 			}
 		}
@@ -75,6 +70,14 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 			for(int i = foodBank.size(); i < 500; i++) {
 				foodBank.add(new Food(player));
 			}
+		}
+		
+		//painting enemies and food
+		for(Food f: foodBank) {
+			f.paint(g, player);
+		}	
+		for(Enemy e: enemies) {
+			e.paint(g, player); 
 		}
 		
         //painting player
@@ -88,6 +91,10 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
     		g.setFont(font1);
     		g.setColor(Color.black);
         	g.drawString("You Won!", 150, 200);
+        	isWinner = true;
+        	
+        	g.setFont(font3);
+        	g.drawString("Final Mass: " + player.getMass(), 130, 270);
     	}
     }
         
@@ -97,12 +104,13 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		enemies = new ArrayList<Enemy>();
 		foodBank = new ArrayList<Food>();
 		player = new Cell(400, 300, 30);
+		isWinner = false;
 	
-		for(int i = 0; i < 125; i++) {
-			enemies.add(new Enemy());
+		for(int i = 0; i < 50; i++) {
+			enemies.add(new Enemy(player));
 		}
 		
-		for(int i = 0; i < 500; i++) {
+		for(int i = 0; i < 200; i++) {
 			foodBank.add(new Food(player));
 		}
 		
@@ -119,6 +127,8 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		frame.addMouseMotionListener(this);
 		t = new Timer(17, this); //choose swing library for import
 		t.start();
+		
+		startTime = System.currentTimeMillis();
 	}
 	
 

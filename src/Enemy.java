@@ -10,30 +10,28 @@ public class Enemy {
 	 private int rad;
 	 private int x, y;
 	 private int cx, cy;
-	 private int radToVelX, radToVelY;
+	 private int radToVel = 100;
 	 private Color color;
 	 double randX = Math.random(), randY = Math.random();
 
 	 
-	 public Enemy() {
-		 rad = (int)(Math.random() * 40 + 10);
+	 public Enemy(Cell p) {
+		 rad = (int)(Math.random() * 20 + 10);
 		 mass = (int)(Math.PI * rad * rad);
-	    
-	     x = (int)(Math.random() * 2500 - 500);
-	     y = (int)(Math.random() * 2500 - 500);
 	     
-	     radToVelX = (int)(Math.random() * 5 + 150);
+		 x = (int)(Math.random() * 1700 + p.getWx()+30);
+		 y = (int)(Math.random() * 1700 + p.getWy()+30);
+	     
 	     if(randX < 0.5) {
-			 vx = (int)(radToVelX/rad); 
+			 vx = (int)(radToVel/rad); 
 		 }else {
-			 vx = (int)(-radToVelX/rad); 
+			 vx = (int)(-radToVel/rad); 
 		 }
 	     
-	     radToVelY = (int)(Math.random() * 5 + 150);
 	     if(randY < 0.5) {
-			 vy = (int)(radToVelY/rad); 
+			 vy = (int)(radToVel/rad); 
 		 }else {
-			 vy = (int)(-radToVelY/rad); 
+			 vy = (int)(-radToVel/rad); 
 		 }
 	     
 	     cx = x + rad;
@@ -46,10 +44,10 @@ public class Enemy {
 	     color = new Color(r, b, g); 
 	 }
 	 
-	 public boolean enemyCollision(ArrayList<Enemy> enemies, Enemy e) {
+	 public boolean enemyCollision(ArrayList<Enemy> enemies, Enemy e, Cell p) {
 	     for(int i = 0; i < enemies.size(); i++) {
 			 if(e.isColliding(enemies.get(i)) && e.getRad() > enemies.get(i).getRad()) {
-			    e.updateSize(enemies.get(i).getMass());
+			    e.updateSize(enemies.get(i).getMass(), p);
 			    enemies.remove(i);
 			    return true;
 			 }
@@ -68,45 +66,43 @@ public class Enemy {
 		}return true;
 	 }
 	 
-	 public void updateSize(int mass) {
-		 if(mass != 500) {
+	 public void updateSize(int mass, Cell p) {
+		 if(mass < 15000) {
 			 this.mass += (int)((mass));
+			 if(this.mass > 10000) this.mass = 10000;
 		     rad = (int)Math.sqrt(this.mass/Math.PI); 
 		     cx = x + rad;
 		     cy = y + rad;	 
 		 }
+		 
+		 //added to account for when enemies both collide and reach border 
+		 while(x + (2*rad) >= (p.getWx() + p.getWidth())) {
+	    	 x -= 10;
+	     }
+		 while(y + (2*rad) >= (p.getWy() + p.getWidth())) {
+	    	 y -= 10;
+	     }
 	     
 	 }
 	 
 	 public void paint(Graphics g, Cell p) {
+		 
+	
+		 //have enemy object bounce off world rectangle borders
+		 if(x <= p.getWx() || x+(2*rad) >= (p.getWx() + p.getWidth())) {
+			 vx = -vx;
+		 }
+		 if(y <= p.getWy() || y+(2*rad) >= (p.getWy() + p.getWidth())) {
+			 vy = -vy;
+		 } 
+		 
 		 update(p);
 		 g.setColor(color);
 		 g.fillOval(x, y, rad * 2, rad * 2);
-			
-		 //have enemy object bounce off world rectangle borders
-		 if(x == p.getWx() || x == (p.getWx() + p.getWidth())) {
-			 vx = -vx;
-		 }
-		 if(y == p.getWy() || y == (p.getWy() + p.getWidth())) {
-			 vy = -vy;
-		 } 
+		 
 	 }
 	 
-	 public void update(Cell p) {
-		 radToVelX = (int)(Math.random() * 5 + 150);
-	     if(randX < 0.5) {
-			 vx = (int)(radToVelX/rad); 
-		 }else {
-			 vx = (int)(-radToVelX/rad); 
-		 }
-	     
-	     radToVelY = (int)(Math.random() * 5 + 150);
-	     if(randY < 0.5) {
-			 vy = (int)(radToVelY/rad); 
-		 }else {
-			 vy = (int)(-radToVelY/rad); 
-		 }
-		 
+	 public void update(Cell p) {		 
 		 x += (vx + p.getVx());
 	     y += (vy + p.getVy());
 		 cx += (vx + p.getVx());

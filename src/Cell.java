@@ -43,10 +43,11 @@ public class Cell {
     	
     	wx += vx;
 		wy += vy;
+		
     }
     
     public void updateSize(int mass) {
-    	if(mass != 2000) {
+    	if(mass < 25000) {
 			 this.mass += (int)((mass));
 		     rad = (int)Math.sqrt(this.mass/Math.PI);
 		     cx = x + rad;
@@ -67,14 +68,15 @@ public class Cell {
         vx = (int)(v * Math.cos(angle) * xSign);
         vy = (int)(v * Math.sin(angle) * ySign);
     	
-    	if(Math.sqrt((Math.pow(xDist, 2) + Math.pow(yDist, 2))) > 500 || ((mx < 460 && mx > 400) && (my < 360 && my > 300))
-    			|| x <= wx || x >= wx + width || y <= wy || y >= wy + width) {
+    	if(((mx < 460 && mx > 400) && (my < 360 && my > 300))) {
     		vx = 0;
     		vy = 0;
     	}
     	
     	if(x <= wx && xSign < 0) {
     		vx = (int)(v * Math.cos(angle) * xSign);
+    	}else if(x <= wx){
+    		vx = 0;
     	}
 
     }
@@ -126,4 +128,9 @@ public class Cell {
     public int getRad() {
     	return rad;
     }
+
+	public int getMass() {
+		// TODO Auto-generated method stub
+		return mass;
+	}
 }

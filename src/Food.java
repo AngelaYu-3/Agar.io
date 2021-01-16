@@ -14,20 +14,24 @@ public class Food {
     
     //constructor
     public Food(Cell p) {
-    	x = (int)(Math.random() * 2000 + p.getWx()-5);
-	    y = (int)(Math.random() * 2000 + p.getWy()-5);
-        rad = 4;
+    	x = (int)(Math.random() * 2000 + p.getWx());
+	    y = (int)(Math.random() * 2000 + p.getWy()+15);
+        rad = 2;
         cx = x + rad;
         cy = y + rad;
         mass = (int) (Math.PI * rad * rad);
 	     
-	    color = new Color(100, 255, 0); 
+	    color = new Color(100, 200, 0); 
     }
     
     public void paint(Graphics g, Cell p) {
     	update(p);
-    	g.setColor(color);
-    	g.fillOval(x, y, rad * 2, rad * 2);  
+    	
+    	if(x > p.getWx() && x < p.getWx()+p.getWidth() && y > p.getWy() && y < p.getWy()+p.getWidth()) {
+    		g.setColor(color);
+        	g.fillOval(x, y, rad * 2, rad * 2); 
+    	}
+    	 
     }
     
     //anything that updates variable of this object
