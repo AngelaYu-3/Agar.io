@@ -33,52 +33,61 @@ public class Cell {
 	    color = new Color(51, 204, 204); 
     }
     
-    public void paint(Graphics g) {
+    public void paint(Graphics g, boolean isLoser) {
     	g.setColor(color);
     	g.fillOval(x, y, rad * 2, rad * 2);  
     	
-    	g.setFont(font2);
-    	g.setColor(Color.black);
-    	g.drawString("YOU",cx-15, cy);
-    	
-    	wx += vx;
-		wy += vy;
-		
+    	if(rad != 0) {
+    		g.setFont(font2);
+        	g.setColor(Color.black);
+        	g.drawString("YOU",cx-15, cy);
+    	}
+ 
+    		wx += vx;
+    		wy += vy;	
     }
     
     public void updateSize(int mass) {
-    	if(mass < 25000) {
-			 this.mass += (int)((mass));
+    	if(mass < 30000) {
+			 this.mass += (int)((mass/2));
 		     rad = (int)Math.sqrt(this.mass/Math.PI);
 		     cx = x + rad;
 		     cy = y + rad;	 
 		 }
+    	
+    	while(x + (2*rad) >= (wx + width)) {
+	    	 x -= 10;
+	     }
+		while(y + (2*rad) >= (wy + width)) {
+	    	 y -= 10;
+	     }
     }
     
     public void move(int mx, int my) {
-    	int xSign, ySign;
-    	double xDist = mx - cx;
-    	double yDist = my-cy;
-    	
-    	xSign = (xDist < 0) ? 1: -1;
-    	ySign = (yDist < 0) ? 1: -1;
-    	
-    	double angle = Math.abs(Math.atan(yDist/xDist));
-        double v = Math.sqrt((2* Math.pow(radToVelocity/rad, 2)));
-        vx = (int)(v * Math.cos(angle) * xSign);
-        vy = (int)(v * Math.sin(angle) * ySign);
-    	
-    	if(((mx < 460 && mx > 400) && (my < 360 && my > 300))) {
-    		vx = 0;
-    		vy = 0;
+    	if(rad != 0) {
+    		int xSign, ySign;
+        	double xDist = mx - cx;
+        	double yDist = my-cy;
+        	
+        	xSign = (xDist < 0) ? 1: -1;
+        	ySign = (yDist < 0) ? 1: -1;
+        	
+        	double angle = Math.abs(Math.atan(yDist/xDist));
+            double v = Math.sqrt((2* Math.pow(radToVelocity/rad, 2)));
+            vx = (int)(v * Math.cos(angle) * xSign);
+            vy = (int)(v * Math.sin(angle) * ySign);
+        	
+        	if(((mx < 460 && mx > 400) && (my < 360 && my > 300))) {
+        		vx = 0;
+        		vy = 0;
+        	}
+        	
+        	if(x <= wx && xSign < 0) {
+        		vx = (int)(v * Math.cos(angle) * xSign);
+        	}else if(x <= wx){
+        		vx = 0;
+        	}
     	}
-    	
-    	if(x <= wx && xSign < 0) {
-    		vx = (int)(v * Math.cos(angle) * xSign);
-    	}else if(x <= wx){
-    		vx = 0;
-    	}
-
     }
     
     //mass to radius helper method
@@ -128,9 +137,14 @@ public class Cell {
     public int getRad() {
     	return rad;
     }
+    
+    public void setRad(int rad) {
+    	this.rad = rad;
+    }
 
 	public int getMass() {
 		// TODO Auto-generated method stub
 		return mass;
 	}
+	
 }

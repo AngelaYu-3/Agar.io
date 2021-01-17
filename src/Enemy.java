@@ -10,7 +10,7 @@ public class Enemy {
 	 private int rad;
 	 private int x, y;
 	 private int cx, cy;
-	 private int radToVel = 100;
+	 private int radToVel = 150;
 	 private Color color;
 	 double randX = Math.random(), randY = Math.random();
 
@@ -46,7 +46,7 @@ public class Enemy {
 	 
 	 public boolean enemyCollision(ArrayList<Enemy> enemies, Enemy e, Cell p) {
 	     for(int i = 0; i < enemies.size(); i++) {
-			 if(e.isColliding(enemies.get(i)) && e.getRad() > enemies.get(i).getRad()) {
+			 if(e.isCollidingE(enemies.get(i)) && e.getRad() > enemies.get(i).getRad()) {
 			    e.updateSize(enemies.get(i).getMass(), p);
 			    enemies.remove(i);
 			    return true;
@@ -57,7 +57,7 @@ public class Enemy {
 	 }
 	 
 	 //collision code
-	 public boolean isColliding(Enemy en2) {
+	 public boolean isCollidingE(Enemy en2) {
 		double minDist = rad + en2.rad; 
 		double distance = Math.sqrt(Math.pow(cx - en2.cx, 2) + Math.pow(cy - en2.cy, 2));
 		
@@ -66,8 +66,17 @@ public class Enemy {
 		}return true;
 	 }
 	 
+	 public boolean isCollidingP(Cell p) {
+	    	double minDist = rad + p.getRad();
+	        double distance = Math.sqrt(Math.pow(cx - p.getCx(), 2) + Math.pow(cy - p.getCy(), 2));
+			
+			if(distance > minDist) {
+				return false;
+			}return true;
+	 }
+	 
 	 public void updateSize(int mass, Cell p) {
-		 if(mass < 15000) {
+		 if(mass < 25000) {
 			 this.mass += (int)((mass));
 			 if(this.mass > 10000) this.mass = 10000;
 		     rad = (int)Math.sqrt(this.mass/Math.PI); 
