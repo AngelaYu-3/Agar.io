@@ -29,29 +29,27 @@ public class Cell {
         wy = -500;
         width = 2000;
         world = new Rectangle(wx, wy, width, width);
-	    cx = x + rad;
-	    cy = y + rad;
 	    
 	    color = new Color(51, 204, 204); 
     }
     
     public void paint(Graphics g, boolean isLoser) {
     	g.setColor(color);
-    	g.fillOval(x, y, rad * 2, rad * 2);  
+    	g.fillOval(x - rad, y - rad, rad * 2, rad * 2);  
     	
     	if(rad != 0) {
     		g.setFont(font2);
         	g.setColor(Color.black);
-        	g.drawString("YOU",cx-15, cy);
+        	g.drawString("YOU",x-15, y);
     	}
     	
-    	if(x <= wx && xSign > 0 || (x + (2*rad)) >= wx + width && xSign < 0) {
+    	if(x - rad <= wx && xSign > 0 || (x - rad + (2*rad)) >= wx + width && xSign < 0) {
     	    vx = 0;	
     	}else {
     		vx = (int)(v * Math.cos(angle) * xSign);
     	}
     	
-    	if(y <= wy && ySign > 0 || (y + (2*rad)) >= wy + width && ySign < 0) {
+    	if(y - rad <= wy && ySign > 0 || (y - rad + (2*rad)) >= wy + width && ySign < 0) {
     		vy = 0;
     	}else {
     		vy = (int)(v * Math.sin(angle) * ySign);
@@ -104,10 +102,10 @@ public class Cell {
         		vy = 0;
         	}
         	
-        	if(x <= wx && xSign > 0 || (x + (2*rad)) >= wx + width && xSign < 0) {
+        	if(x - rad <= wx && xSign > 0 || (x - rad + (2*rad)) >= wx + width && xSign < 0) {
         	    vx = 0;	
         	}
-        	if(y <= wy && ySign > 0 || (y + (2*rad)) >= wy + width && ySign < 0) {
+        	if(y - rad <= wy && ySign > 0 || (y - rad + (2*rad)) >= wy + width && ySign < 0) {
         		vy = 0;
         	}
         	

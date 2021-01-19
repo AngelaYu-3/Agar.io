@@ -19,8 +19,8 @@ public class Enemy {
 		 rad = (int)(Math.random() * 20 + 10);
 		 mass = (int)(Math.PI * rad * rad);
 	     
-		 x = (int)(Math.random() * 1700 + p.getWx()+30);
-		 y = (int)(Math.random() * 1700 + p.getWy()+30);
+		 x = (int)(Math.random() * 1500 + p.getWx()+30);
+		 y = (int)(Math.random() * 1500 + p.getWy()+30);
 	     
 	     if(randX < 0.5) {
 			 vx = (int)(radToVel/rad); 
