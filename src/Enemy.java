@@ -76,9 +76,9 @@ public class Enemy {
 	 }
 	 
 	 public void updateSize(int mass, Cell p) {
-		 if(mass < 25000) {
+		 if(mass < 20000) {
 			 this.mass += (int)((mass));
-			 if(this.mass > 10000) this.mass = 10000;
+			 if(this.mass > 20000) this.mass = 20000;
 		     rad = (int)Math.sqrt(this.mass/Math.PI); 
 		     cx = x + rad;
 		     cy = y + rad;	 
@@ -96,7 +96,6 @@ public class Enemy {
 	 
 	 public void paint(Graphics g, Cell p) {
 		 
-	
 		 //have enemy object bounce off world rectangle borders
 		 if(x <= p.getWx() || x+(2*rad) >= (p.getWx() + p.getWidth())) {
 			 vx = -vx;

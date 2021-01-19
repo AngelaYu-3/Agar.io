@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.MouseInfo;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,11 +30,10 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	boolean isWinner, isLoser;
 	
 	/*TODO:
-	 * fix border collision--based on movement of border (will need to work on collision in terms of player!!)
-	 * get food to only spawn in border
+	 * fix player border collision
+	 * add loser screen and restart function
+	 * add split functionality
 	 * fix max size of enemies
-	 * 
-	 * split??
 	 */
 
 	public void paint(Graphics g) {
@@ -41,7 +41,6 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		
 		g.setColor(Color.BLACK);
 		g.drawRect(player.getWx(), player.getWy(), player.getWidth(), player.getWidth());
-		
 		
 		//enemy collisions and removing smaller enemy
 		for(Enemy e: enemies) {
@@ -79,7 +78,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		//food player collisions
 		for(int i = 0; i < foodBank.size(); i++) {
 			if(foodBank.get(i).isCollidingP(player) && !isWinner && !isLoser) {
-			    player.updateSize(foodBank.get(i).getMass() + 10);
+			    player.updateSize(foodBank.get(i).getMass());
 			    foodBank.remove(i);
 			}
 		}
@@ -98,6 +97,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		for(Enemy e: enemies) {
 			e.paint(g, player); 
 		}
+		
         player.paint(g, isLoser);
         
         g.setFont(font2);

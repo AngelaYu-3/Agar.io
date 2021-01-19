@@ -9,6 +9,8 @@ public class Cell {
     private int rad;
     private int x, y;
     private int cx, cy;
+    private int xSign, ySign;
+    private double angle, v;
     private int radToVelocity = 250;
     private int wx, wy, width;
 	Rectangle world;
@@ -42,38 +44,58 @@ public class Cell {
         	g.setColor(Color.black);
         	g.drawString("YOU",cx-15, cy);
     	}
+    	
+    	if(x <= wx && xSign > 0 || (x + (2*rad)) >= wx + width && xSign < 0) {
+    	    vx = 0;	
+    	}else {
+    		vx = (int)(v * Math.cos(angle) * xSign);
+    	}
+    	
+    	if(y <= wy && ySign > 0 || (y + (2*rad)) >= wy + width && ySign < 0) {
+    		vy = 0;
+    	}else {
+    		vy = (int)(v * Math.sin(angle) * ySign);
+    	}
  
-    		wx += vx;
-    		wy += vy;	
+    	    
+    	wx += vx;
+    	wy += vy;	
     }
     
     public void updateSize(int mass) {
-    	if(mass < 30000) {
-			 this.mass += (int)((mass/2));
+    	if(mass < 25000) {
+			 this.mass += mass;
 		     rad = (int)Math.sqrt(this.mass/Math.PI);
 		     cx = x + rad;
 		     cy = y + rad;	 
 		 }
     	
+    	//added to account for when player both collides w/ enemy/food and reaches border
+    	//can be improved--not very smooth
     	while(x + (2*rad) >= (wx + width)) {
-	    	 x -= 10;
+	    	 x--;
+	    	 cx--;
 	     }
 		while(y + (2*rad) >= (wy + width)) {
-	    	 y -= 10;
-	     }
+	    	 y--;
+	    	 cy--;
+	    }
+    }
+    
+    public void split() {
+    	//when mouse clicked and mass > 2500 can split 25% and 75%? up to size 1000 (shoot fast and direct?)
     }
     
     public void move(int mx, int my) {
     	if(rad != 0) {
-    		int xSign, ySign;
         	double xDist = mx - cx;
         	double yDist = my-cy;
         	
         	xSign = (xDist < 0) ? 1: -1;
         	ySign = (yDist < 0) ? 1: -1;
         	
-        	double angle = Math.abs(Math.atan(yDist/xDist));
-            double v = Math.sqrt((2* Math.pow(radToVelocity/rad, 2)));
+        	angle = Math.abs(Math.atan(yDist/xDist));
+            v = Math.sqrt((2* Math.pow(radToVelocity/rad, 2)));
             vx = (int)(v * Math.cos(angle) * xSign);
             vy = (int)(v * Math.sin(angle) * ySign);
         	
@@ -82,11 +104,14 @@ public class Cell {
         		vy = 0;
         	}
         	
-        	if(x <= wx && xSign < 0) {
-        		vx = (int)(v * Math.cos(angle) * xSign);
-        	}else if(x <= wx){
-        		vx = 0;
+        	if(x <= wx && xSign > 0 || (x + (2*rad)) >= wx + width && xSign < 0) {
+        	    vx = 0;	
         	}
+        	if(y <= wy && ySign > 0 || (y + (2*rad)) >= wy + width && ySign < 0) {
+        		vy = 0;
+        	}
+        	
+        	
     	}
     }
     
