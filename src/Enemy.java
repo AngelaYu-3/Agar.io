@@ -68,7 +68,7 @@ public class Enemy {
 	 
 	 public boolean isCollidingP(Cell p) {
 	    	double minDist = rad + p.getRad();
-	        double distance = Math.sqrt(Math.pow(cx - p.getCx(), 2) + Math.pow(cy - p.getCy(), 2));
+	        double distance = Math.sqrt(Math.pow(cx - p.getX(), 2) + Math.pow(cy - p.getY(), 2));
 			
 			if(distance > minDist) {
 				return false;
@@ -91,6 +91,14 @@ public class Enemy {
 		 while(y + (2*rad) >= (p.getWy() + p.getWidth())) {
 	    	 y -= 10;
 	     }
+		 
+		 while(x <= p.getWx()) {
+			 x += 10;
+		 }
+		 
+		 while(y <= p.getWy()) {
+			 y += 10;
+		 }
 	     
 	 }
 	 
@@ -135,5 +143,13 @@ public class Enemy {
 	 
 	 public int getMass() {
 		 return mass;
+	 }
+	 
+	 public Color getColor() {
+		 return color;
+	 }
+	 
+	 public void setColor(Color color) {
+		 this.color = color;
 	 }
 }

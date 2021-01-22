@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -16,7 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 
-public class Driver extends JPanel implements ActionListener, KeyListener, MouseMotionListener {
+public class Driver extends JPanel implements ActionListener, MouseMotionListener {
 	
 	ArrayList<Enemy> enemies;  
 	ArrayList<Food> foodBank;
@@ -25,15 +26,11 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	Font font1 = new Font("Courier New", 1, 100);
 	Font font2 = new Font("Courier New", 1, 15);
 	Font font3 = new Font("Courier New", 1, 50);
-	long startTime, endTime;
-	int time = 0;
+	ArrayList<Cell> cells = new ArrayList<Cell>();
 	boolean isWinner, isLoser;
 	
 	/*TODO:
-	 * fix player border collision
-	 * add loser screen and restart function
 	 * add split functionality
-	 * fix max size of enemies
 	 */
 
 	public void paint(Graphics g) {
@@ -41,6 +38,28 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		
 		g.setColor(Color.BLACK);
 		g.drawRect(player.getWx(), player.getWy(), player.getWidth(), player.getWidth());
+		
+		//gridlines
+		g.setColor(Color.LIGHT_GRAY);
+		int x = player.getWx() + 100;
+		int y1 = player.getWy();
+		int y2 = player.getWy() + player.getWidth();
+		
+		for(int i = 0; i < 19; i++ ) {
+		     g.drawLine(x, y1, x, y2);	
+		     x += 100;
+		}
+		
+		int x1 = player.getWx();
+		int x2 = player.getWx() + player.getWidth();
+		int y = player.getWy() + 100;
+		
+		for(int i = 0; i < 19; i++ ) {
+		     g.drawLine(x1, y, x2, y);	
+		     y += 100;
+		}
+		
+		//System.out.println(player.getMass());
 		
 		//enemy collisions and removing smaller enemy
 		for(Enemy e: enemies) {
@@ -58,6 +77,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 				
 				if(enemies.get(i).getRad() < player.getRad()) {
 					player.updateSize(enemies.get(i).getMass());
+					player.setColor(enemies.get(i).getColor());
 					enemies.remove(i);
 					break;
 				}
@@ -98,7 +118,10 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 			e.paint(g, player); 
 		}
 		
-        player.paint(g, isLoser);
+		player.paint(g, isLoser);
+		/*for(Cell c: cells) {
+			c.paint(g, isLoser);
+		}*/
         
         g.setFont(font2);
     	g.setColor(Color.black);
@@ -148,7 +171,13 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		frame.setResizable(false);
-		frame.addKeyListener(this);
+		
+		//mouse click detection
+		frame.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				//cells.add(player.split(e.getX(), e.getY()));
+			}
+		});
 
 	
 		frame.addMouseMotionListener(this);
@@ -164,53 +193,7 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
-		//System.out.println("Mouse moved! X: " +  e.getX() + " Y: " + e.getY());
 		player.move(e.getX(), e.getY());
-	}
-
-
-	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 
@@ -218,6 +201,14 @@ public class Driver extends JPanel implements ActionListener, KeyListener, Mouse
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		repaint(); //Timer will invoke this method which then refreshes the screen for the "animation"
+		
+	}
+
+
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
 		
 	}
 }

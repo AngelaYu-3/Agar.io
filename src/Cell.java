@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 
 public class Cell { 
     private int vx, vy;
@@ -11,13 +12,16 @@ public class Cell {
     private int cx, cy;
     private int xSign, ySign;
     private double angle, v;
-    private int radToVelocity = 250;
-    private int wx, wy, width;
-	Rectangle world;
+    private int radToVelocity = 300;
+    private int wx = -500;
+    private int wy = -500;
+    private int width = 2000;
+	Rectangle world = new Rectangle(wx, wy, width, width);;
     private Color color;
     private boolean isAlive;
     
-    Font font2 = new Font("Courier New", 1, 15);
+    Font font2 = new Font("Courier New", 1, 16);
+
     
     //constructor
     public Cell(int x, int y, int rad) {
@@ -25,12 +29,6 @@ public class Cell {
         this.y = y;
         this.rad = rad;
         this.mass = (int) (Math.PI * rad * rad);
-        wx = -500;
-        wy = -500;
-        width = 2000;
-        world = new Rectangle(wx, wy, width, width);
-	    
-	    color = new Color(51, 204, 204); 
     }
     
     public void paint(Graphics g, boolean isLoser) {
@@ -61,27 +59,24 @@ public class Cell {
     }
     
     public void updateSize(int mass) {
-    	if(mass < 25000) {
+    	if(this.mass < 40000) {
 			 this.mass += mass;
 		     rad = (int)Math.sqrt(this.mass/Math.PI);
 		     cx = x + rad;
 		     cy = y + rad;	 
-		 }
-    	
-    	//added to account for when player both collides w/ enemy/food and reaches border
-    	//can be improved--not very smooth
-    	while(x + (2*rad) >= (wx + width)) {
-	    	 x--;
-	    	 cx--;
-	     }
-		while(y + (2*rad) >= (wy + width)) {
-	    	 y--;
-	    	 cy--;
-	    }
+		}
     }
     
-    public void split() {
-    	//when mouse clicked and mass > 2500 can split 25% and 75%? up to size 1000 (shoot fast and direct?)
+    public Cell split(int x, int y) {
+    	if(this.mass > 25000) {
+    		double newMass = this.mass * 0.25;
+    		int newRad = (int)(Math.sqrt(newMass/Math.PI));
+    		this.mass *= 0.75;
+    		rad = (int)Math.sqrt(this.mass/Math.PI);
+		    cx = x + rad;
+		    cy = y + rad;	
+		    return new Cell(x,y,newRad);
+    	}return null;
     }
     
     public void move(int mx, int my) {
@@ -141,8 +136,8 @@ public class Cell {
     	return cx;
     }
     
-    public int getCy() {
-    	return cy;
+    public int getY() {
+    	return y;
     }
     
     public int getWx() {
@@ -163,6 +158,10 @@ public class Cell {
     
     public void setRad(int rad) {
     	this.rad = rad;
+    }
+    
+    public void setColor(Color color) {
+    	this.color = color;
     }
 
 	public int getMass() {

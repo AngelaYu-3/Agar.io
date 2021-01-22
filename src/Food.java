@@ -54,7 +54,7 @@ public class Food {
     
     public boolean isCollidingP(Cell p) {
     	double minDist = rad + p.getRad();
-        double distance = Math.sqrt(Math.pow(cx - p.getCx(), 2) + Math.pow(cy - p.getCy(), 2));
+        double distance = Math.sqrt(Math.pow(cx - p.getX(), 2) + Math.pow(cy - p.getY(), 2));
 		
 		if(distance > minDist) {
 			return false;
