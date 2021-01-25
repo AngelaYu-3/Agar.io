@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 public class Food { 
-    private int vx, vy;
     private int mass;
     private int rad;
     private int x, y;
@@ -13,9 +12,9 @@ public class Food {
     private boolean isAlive;
     
     //constructor
-    public Food(Cell p) {
-    	x = (int)(Math.random() * 2000 + p.getWx());
-	    y = (int)(Math.random() * 2000 + p.getWy()+15);
+    public Food(World w) {
+    	x = (int)(Math.random() * 2000 + w.getWx());
+	    y = (int)(Math.random() * 2000 + w.getWy()+15);
         rad = 2;
         cx = x + rad;
         cy = y + rad;
@@ -24,10 +23,10 @@ public class Food {
 	    color = new Color(100, 200, 0); 
     }
     
-    public void paint(Graphics g, Cell p) {
+    public void paint(Graphics g, Cell p, World w) {
     	update(p);
     	
-    	if(x > p.getWx() && x < p.getWx()+p.getWidth() && y > p.getWy() && y < p.getWy()+p.getWidth()) {
+    	if(x > w.getWx() && x < w.getWx()+w.getWidth() && y > w.getWy() && y < w.getWy()+w.getWidth()) {
     		g.setColor(color);
         	g.fillOval(x, y, rad * 2, rad * 2); 
     	}
@@ -36,10 +35,10 @@ public class Food {
     
     //anything that updates variable of this object
     public void update(Cell p) {
-        x += (vx + p.getVx());
-        y += (vy + p.getVy());
-        cx += (vx + p.getVx());
-        cy += (vy + p.getVy());
+        x += p.getVx();
+        y += p.getVy();
+        cx += p.getVx();
+        cy += p.getVy();
         
     }
     
@@ -68,21 +67,6 @@ public class Food {
     
     public void setX(int x) {
     	this.x = x;
-    }
-    
-    public int getVx() {
-    	return vx;
-    }
-    
-    public void setVx(int vx) {
-    	this.vx = vx;
-    }
-    public int getVy() {
-    	return vy;
-    }
-    
-    public void setVy(int vy) {
-    	this.vy = vy;
     }
     
     public int getMass() {

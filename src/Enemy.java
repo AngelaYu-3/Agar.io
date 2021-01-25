@@ -15,12 +15,12 @@ public class Enemy {
 	 double randX = Math.random(), randY = Math.random();
 
 	 
-	 public Enemy(Cell p) {
+	 public Enemy(World w) {
 		 rad = (int)(Math.random() * 20 + 10);
 		 mass = (int)(Math.PI * rad * rad);
 	     
-		 x = (int)(Math.random() * 1500 + p.getWx()+30);
-		 y = (int)(Math.random() * 1500 + p.getWy()+30);
+		 x = (int)(Math.random() * 1500 + w.getWx()+30);
+		 y = (int)(Math.random() * 1500 + w.getWy()+30);
 	     
 	     if(randX < 0.5) {
 			 vx = (int)(radToVel/rad); 
@@ -44,10 +44,10 @@ public class Enemy {
 	     color = new Color(r, b, g); 
 	 }
 	 
-	 public boolean enemyCollision(ArrayList<Enemy> enemies, Enemy e, Cell p) {
+	 public boolean enemyCollision(ArrayList<Enemy> enemies, Enemy e, World w) {
 	     for(int i = 0; i < enemies.size(); i++) {
 			 if(e.isCollidingE(enemies.get(i)) && e.getRad() > enemies.get(i).getRad()) {
-			    e.updateSize(enemies.get(i).getMass(), p);
+			    e.updateSize(enemies.get(i).getMass(), w);
 			    enemies.remove(i);
 			    return true;
 			 }
@@ -75,7 +75,7 @@ public class Enemy {
 			}return true;
 	 }
 	 
-	 public void updateSize(int mass, Cell p) {
+	 public void updateSize(int mass, World w) {
 		 if(mass < 20000) {
 			 this.mass += (int)((mass));
 			 if(this.mass > 20000) this.mass = 20000;
@@ -85,30 +85,30 @@ public class Enemy {
 		 }
 		 
 		 //added to account for when enemies both collide and reach border 
-		 while(x + (2*rad) >= (p.getWx() + p.getWidth())) {
+		 while(x + (2*rad) >= (w.getWx() + w.getWidth())) {
 	    	 x -= 10;
 	     }
-		 while(y + (2*rad) >= (p.getWy() + p.getWidth())) {
+		 while(y + (2*rad) >= (w.getWy() + w.getWidth())) {
 	    	 y -= 10;
 	     }
 		 
-		 while(x <= p.getWx()) {
+		 while(x <= w.getWx()) {
 			 x += 10;
 		 }
 		 
-		 while(y <= p.getWy()) {
+		 while(y <= w.getWy()) {
 			 y += 10;
 		 }
 	     
 	 }
 	 
-	 public void paint(Graphics g, Cell p) {
+	 public void paint(Graphics g, Cell p, World w) {
 		 
 		 //have enemy object bounce off world rectangle borders
-		 if(x <= p.getWx() || x+(2*rad) >= (p.getWx() + p.getWidth())) {
+		 if(x <= w.getWx() || x+(2*rad) >= (w.getWx() + w.getWidth())) {
 			 vx = -vx;
 		 }
-		 if(y <= p.getWy() || y+(2*rad) >= (p.getWy() + p.getWidth())) {
+		 if(y <= w.getWy() || y+(2*rad) >= (w.getWy() + w.getWidth())) {
 			 vy = -vy;
 		 } 
 		 
@@ -139,6 +139,14 @@ public class Enemy {
 	 
 	 public int getCy() {
 		 return cy;
+	 }
+	 
+	 public int getVx() {
+		 return vx;
+	 }
+	 
+	 public int getVy() {
+		 return vy;
 	 }
 	 
 	 public int getMass() {

@@ -13,10 +13,6 @@ public class Cell {
     private int xSign, ySign;
     private double angle, v;
     private int radToVelocity = 300;
-    private int wx = -500;
-    private int wy = -500;
-    private int width = 2000;
-	Rectangle world = new Rectangle(wx, wy, width, width);;
     private Color color;
     private boolean isAlive;
     
@@ -29,33 +25,33 @@ public class Cell {
         this.y = y;
         this.rad = rad;
         this.mass = (int) (Math.PI * rad * rad);
+        color = new Color(20, 100, 250);
     }
     
-    public void paint(Graphics g, boolean isLoser) {
+    public void paint(Graphics g, World w) {
     	g.setColor(color);
-    	g.fillOval(x - rad, y - rad, rad * 2, rad * 2);  
-    	
+    	g.fillOval(x - rad, y - rad, rad * 2, rad * 2);
+    
     	if(rad != 0) {
     		g.setFont(font2);
         	g.setColor(Color.black);
         	g.drawString("YOU",x-15, y);
     	}
     	
-    	if(x - rad <= wx && xSign > 0 || (x - rad + (2*rad)) >= wx + width && xSign < 0) {
+    	if(x - rad <= w.getWx() && xSign > 0 || (x - rad + (2*rad)) >= w.getWx() + w.getWidth() && xSign < 0) {
     	    vx = 0;	
     	}else {
     		vx = (int)(v * Math.cos(angle) * xSign);
     	}
     	
-    	if(y - rad <= wy && ySign > 0 || (y - rad + (2*rad)) >= wy + width && ySign < 0) {
+    	if(y - rad <= w.getWy() && ySign > 0 || (y - rad + (2*rad)) >= w.getWy() + w.getWidth() && ySign < 0) {
     		vy = 0;
     	}else {
     		vy = (int)(v * Math.sin(angle) * ySign);
     	}
- 
-    	    
-    	wx += vx;
-    	wy += vy;	
+    
+    	w.setWx(w.getWx() + vx);
+    	w.setWy(w.getWy() + vy);	
     }
     
     public void updateSize(int mass) {
@@ -67,19 +63,17 @@ public class Cell {
 		}
     }
     
-    public Cell split(int x, int y) {
-    	if(this.mass > 25000) {
+    public Cell split() {
     		double newMass = this.mass * 0.25;
     		int newRad = (int)(Math.sqrt(newMass/Math.PI));
     		this.mass *= 0.75;
     		rad = (int)Math.sqrt(this.mass/Math.PI);
 		    cx = x + rad;
 		    cy = y + rad;	
-		    return new Cell(x,y,newRad);
-    	}return null;
+		    return new Cell(x+rad,y+rad,newRad);
     }
     
-    public void move(int mx, int my) {
+    public void move(int mx, int my, World w) {
     	if(rad != 0) {
         	double xDist = mx - cx;
         	double yDist = my-cy;
@@ -97,10 +91,10 @@ public class Cell {
         		vy = 0;
         	}
         	
-        	if(x - rad <= wx && xSign > 0 || (x - rad + (2*rad)) >= wx + width && xSign < 0) {
+        	if(x - rad <= w.getWx() && xSign > 0 || (x - rad + (2*rad)) >= w.getWx() + w.getWidth() && xSign < 0) {
         	    vx = 0;	
         	}
-        	if(y - rad <= wy && ySign > 0 || (y - rad + (2*rad)) >= wy + width && ySign < 0) {
+        	if(y - rad <= w.getWy() && ySign > 0 || (y - rad + (2*rad)) >= w.getWy() + w.getWidth() && ySign < 0) {
         		vy = 0;
         	}
         	
@@ -138,18 +132,6 @@ public class Cell {
     
     public int getY() {
     	return y;
-    }
-    
-    public int getWx() {
-    	return wx;
-    }
-    
-    public int getWy() {
-    	return wy;
-    }
-    
-    public int getWidth() {
-    	return width;
     }
     
     public int getRad() {
