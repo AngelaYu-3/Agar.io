@@ -21,7 +21,6 @@ public class Driver extends JPanel implements ActionListener, MouseMotionListene
 	
 	ArrayList<Enemy> enemies;  
 	ArrayList<Food> foodBank;
-	ArrayList<Cell> players;
 	Enemy e;
 	Timer t;
 	World w;
@@ -62,27 +61,27 @@ public class Driver extends JPanel implements ActionListener, MouseMotionListene
 		     y += 100;
 		}
 		
-		//System.out.println(player.getMass());
-		
 		//enemy collisions and removing smaller enemy
 		for(Enemy e: enemies) {
 			if(e.enemyCollision(enemies, e, w)) break;
 		}
 		
-		for(int i = 0; i < enemies.size(); i++) {
-			if(enemies.get(i).isCollidingP(player)) {
-				if(enemies.get(i).getRad() > player.getRad()) {
-					enemies.get(i).updateSize(player.getMass(), w);
-					player.setRad(0);
-					e = enemies.get(i);
-					isLoser = true;
-					break;
-				}
-				
-				if(enemies.get(i).getRad() < player.getRad()) {
-					player.updateSize(enemies.get(i).getMass());
-					enemies.remove(i);
-					break;
+		for(Cell c: cells) {
+			for(int i = 0; i < enemies.size(); i++) {
+				if(enemies.get(i).isCollidingP(c) && c.getAlive()) {
+					if(enemies.get(i).getRad() > c.getRad()) {
+						
+						enemies.get(i).updateSize(c.getMass(), w);
+						c.setRad(0);
+						c.setAlive(false);
+						break;
+					}
+					
+					if(enemies.get(i).getRad() < c.getRad() && c.getAlive()) {
+						c.updateSize(enemies.get(i).getMass(), w);
+						enemies.remove(i);
+						break;
+					}
 				}
 			}
 		}
@@ -99,12 +98,16 @@ public class Driver extends JPanel implements ActionListener, MouseMotionListene
 		}
 		
 		//food player collisions
-		for(int i = 0; i < foodBank.size(); i++) {
-			if(foodBank.get(i).isCollidingP(player) && !isWinner && !isLoser) {
-			    player.updateSize(foodBank.get(i).getMass());
-			    foodBank.remove(i);
+		for(Cell c: cells) {
+			for(int i = 0; i < foodBank.size(); i++) {
+				if(foodBank.get(i).isCollidingP(c) && !isWinner && !isLoser) {
+				    c.updateSize(foodBank.get(i).getMass(), w);
+				    foodBank.remove(i);
+				}
 			}
+			
 		}
+		
 		
 		//adding food 
 		if(foodBank.size() != 500) {
@@ -115,21 +118,20 @@ public class Driver extends JPanel implements ActionListener, MouseMotionListene
 		
 		//painting enemies, food, and player
 		for(Food f: foodBank) {
-			f.paint(g, player, w);
+			f.paint(g, cells.get(0), w);
 		}	
 		for(Enemy e: enemies) {
-			e.paint(g, player, w); 
+			e.paint(g, cells.get(0), w); 
 		}
 		
-		player.paint(g, w);
-		/*for(Cell c: cells) {
-			c.paint(g, w);
-		}*/
+		for(Cell c: cells) {
+			if(c.getAlive()) c.paint(g, w);
+		}
         
         g.setFont(font2);
     	g.setColor(Color.black);
     	g.drawString("Enemies Alive: " + enemies.size(), 10 , 10);
-    	g.drawString("Current Mass: " + player.getMass(), 10, 23);
+    	g.drawString("Current Mass: " + cells.get(0).getMass(), 10, 23);
     	
     	if(enemies.size() == 0) {
     		g.setFont(font1);
@@ -138,16 +140,17 @@ public class Driver extends JPanel implements ActionListener, MouseMotionListene
         	isWinner = true;
         	
         	g.setFont(font3);
-        	g.drawString("Final Mass: " + player.getMass(), 130, 270);
+        	g.drawString("Final Mass: " + cells.get(0).getMass(), 130, 270);
     	}
     	
-    	if(isLoser) {
+    	if(isLoser()) {
     		g.setFont(font1);
     		g.setColor(Color.black);
         	g.drawString("You Lost!", 150, 200);
+        	isLoser = true;
         	
         	g.setFont(font3);
-        	g.drawString("Final Mass: " + player.getMass(), 130, 270);
+        	g.drawString("Final Mass: " + cells.get(0).getMass(), 130, 270);
     	}
     }
         
@@ -156,12 +159,10 @@ public class Driver extends JPanel implements ActionListener, MouseMotionListene
 	public Driver() {
 		enemies = new ArrayList<Enemy>();
 		foodBank = new ArrayList<Food>();
-		player = new Cell(400, 300, 30);
+		cells.add(new Cell(400, 300, 30));
 		w = new World();
 		isWinner = false;
 		isLoser = false;
-		
-		cells.add(new Cell(400, 300, 30));
 	
 		for(int i = 0; i < 50; i++) {
 			enemies.add(new Enemy(w));
@@ -189,11 +190,26 @@ public class Driver extends JPanel implements ActionListener, MouseMotionListene
 	public static void main(String[] arg) {
 		Driver drive = new Driver();
 	}
+	
+	public boolean isLoser() {
+		for(int i = 0; i < cells.size(); i++) {
+			if(cells.get(i).getAlive()) return false;
+		}
+		
+		return true;
+	}
 
 
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
-		player.move(e.getX(), e.getY(), w);
+		if(!isLoser) {
+			int i = 0;
+			while(!cells.get(i).getAlive()) {
+				i++;
+			}
+			
+			cells.get(i).move(e.getX(), e.getY(), w);	
+		}
 	}
 
 
@@ -222,11 +238,10 @@ public class Driver extends JPanel implements ActionListener, MouseMotionListene
 
 
 
-	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getKeyCode() == 32 && player.getMass() > 20000) {
-			player.split();
+		if(e.getKeyCode() == 32 && cells.get(0).getMass() > 10000) {
+			cells.add(cells.get(0).split());
 		}
 	}
 

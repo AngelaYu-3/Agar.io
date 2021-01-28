@@ -9,6 +9,7 @@ public class Cell {
     private int mass;
     private int rad;
     private int x, y;
+    private int mx, my;
     private int cx, cy;
     private int xSign, ySign;
     private double angle, v;
@@ -25,6 +26,7 @@ public class Cell {
         this.y = y;
         this.rad = rad;
         this.mass = (int) (Math.PI * rad * rad);
+        isAlive = true;
         color = new Color(20, 100, 250);
     }
     
@@ -54,26 +56,52 @@ public class Cell {
     	w.setWy(w.getWy() + vy);	
     }
     
-    public void updateSize(int mass) {
+    public void updateSize(int mass, World w) {
     	if(this.mass < 40000) {
 			 this.mass += mass;
 		     rad = (int)Math.sqrt(this.mass/Math.PI);
 		     cx = x + rad;
 		     cy = y + rad;	 
 		}
+    	
+    	 while(x + (2*rad) >= (w.getWx() + w.getWidth())) {
+	    	 x -= 10;
+	     }
+		 while(y + (2*rad) >= (w.getWy() + w.getWidth())) {
+	    	 y -= 10;
+	     }
+		 
+		 while(x <= w.getWx()) {
+			 x += 10;
+		 }
+		 
+		 while(y <= w.getWy()) {
+			 y += 10;
+		 }
     }
     
     public Cell split() {
-    		double newMass = this.mass * 0.25;
-    		int newRad = (int)(Math.sqrt(newMass/Math.PI));
-    		this.mass *= 0.75;
-    		rad = (int)Math.sqrt(this.mass/Math.PI);
-		    cx = x + rad;
-		    cy = y + rad;	
-		    return new Cell(x+rad,y+rad,newRad);
+    	int xC;
+    	int yC;
+        double newMass = this.mass * 0.25;
+        int newRad = (int)(Math.sqrt(newMass/Math.PI));
+    	mass *= 0.75;
+    	rad = (int)Math.sqrt(mass/Math.PI);	
+    	
+    	int rand = (int)(Math.random());
+    	if(rand == 1) {
+    		xC = x - rad - 20;
+    	}else {
+    		xC = x + rad + 20;
+    	}
+    	
+    	rand = (int)(Math.random() * 2*rad - rad);
+		return new Cell(mx,my + rand,newRad);
     }
     
     public void move(int mx, int my, World w) {
+    	this.mx = mx;
+    	this.my = my;
     	if(rad != 0) {
         	double xDist = mx - cx;
         	double yDist = my-cy;
@@ -149,6 +177,14 @@ public class Cell {
 	public int getMass() {
 		// TODO Auto-generated method stub
 		return mass;
+	}
+	
+	public boolean getAlive() {
+		return isAlive;
+	}
+	
+	public void setAlive(boolean isAlive) {
+		this.isAlive = isAlive;
 	}
 	
 }
