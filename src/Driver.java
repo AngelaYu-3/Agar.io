@@ -25,7 +25,7 @@ public class Driver extends JPanel implements ActionListener, MouseMotionListene
 	Timer t;
 	World w;
 	Cell player;
-	Font font1 = new Font("Courier New", 1, 100);
+	Font font1 = new Font("Courier New", 2, 100);
 	Font font2 = new Font("Courier New", 1, 15);
 	Font font3 = new Font("Courier New", 1, 50);
 	ArrayList<Cell> cells = new ArrayList<Cell>();
